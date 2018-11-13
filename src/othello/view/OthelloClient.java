@@ -1,6 +1,7 @@
 package othello.view;
 
 import othello.controller.LogicGame;
+import othello.entities.Account;
 
 import java.io.*;
 import javax.swing.*;
@@ -9,6 +10,9 @@ import java.awt.event.*;
 import java.net.*;
 
 public class OthelloClient {
+    private Account account;
+    private String address;
+    private int port;
 
     public static JFrame f;
     JButton[][] bt;
@@ -110,7 +114,7 @@ public class OthelloClient {
                     {
                         temp+="Tôi: " + enterchat.getText() + "\n";
                         content.setText(temp);
-                        oos.writeObject("chat," + enterchat.getText());
+                        oos.writeObject("chat," + account.getUsername().concat(": ").concat(enterchat.getText().trim()));
                         enterchat.setText("");
                         //temp = "";
                         enterchat.requestFocus();
@@ -164,7 +168,7 @@ public class OthelloClient {
         logicGame.addBoard(bt,matrandanh,x,y);
 
         try {
-            socket = new Socket("127.0.0.1",1234);
+            socket = new Socket(address, port);
             System.out.println("Da ket noi toi othello!");
             os=socket.getOutputStream();
             is=socket.getInputStream();
@@ -179,7 +183,7 @@ public class OthelloClient {
                 String stream = ois.readObject().toString();
                 String[] data = stream.split(",");
                 if (data[0].equals("chat")) {
-                    temp += "Khách:" + data[1] + '\n';
+                    temp += data[1] + '\n';
                     content.setText(temp);
                 }
                 if (data[0].equals("ditiep")) {
@@ -296,7 +300,14 @@ public class OthelloClient {
 
     }
     public static void main(String[] args) throws IOException {
-        new OthelloClient();
+//        new OthelloClient();
     }
 
+    public void run(String address, int port, Account account) throws IOException {
+        this.account = account;
+        this.address = address;
+        this.port = port;
+
+        new OthelloClient();
+    }
 }

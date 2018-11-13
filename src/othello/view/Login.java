@@ -14,6 +14,8 @@ public class Login {
     private JPasswordField txtPwd;
     private JButton btnLogin;
     private JButton btnRegister;
+    private JFrame frame;
+
     private AccountController accountController;
 
     public Login() {
@@ -30,8 +32,9 @@ public class Login {
                     if (id >= 0) {
                         account.setId(id);
                         //forward to set address and port view
-//                        new JoinGame();
-                        JOptionPane.showMessageDialog(panel1, "Login successful!");
+                        dispose();
+                        new JoinGame().run(account);
+//                        JOptionPane.showMessageDialog(panel1, "Login successful!");
                     } else {
                         JOptionPane.showMessageDialog(panel1, "Login failed! " + username + " " + password);
                     }
@@ -48,9 +51,13 @@ public class Login {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Login");
+        new Login().run();
+    }
+
+    private void run() {
+        frame = new JFrame("Login");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setContentPane(new Login().panel1);
+        frame.setContentPane(panel1);
 //        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation(dim.width/2 + frame.getSize().width/2, dim.height/2 + frame.getSize().height/2);
         frame.pack();
@@ -59,4 +66,7 @@ public class Login {
         frame.setVisible(true);
     }
 
+    private void dispose() {
+        frame.dispose();
+    }
 }

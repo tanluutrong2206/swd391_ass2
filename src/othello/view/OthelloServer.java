@@ -1,6 +1,7 @@
 package othello.view;
 
 import othello.controller.LogicGame;
+import othello.entities.Account;
 
 import java.io.*;
 import javax.swing.*;
@@ -9,6 +10,11 @@ import java.awt.event.*;
 import java.net.*;
 
 public class OthelloServer {
+    // fixed port when create socket
+    // can be generated port if want to many people playing game
+    private final int SOCKET_PORT = 1234;
+    private Account account;
+    private LogicGame logicGame;
 
     public static JFrame f;
     JButton[][] bt;
@@ -52,121 +58,20 @@ public class OthelloServer {
         p.setBounds(10, 30, 400, 400);
         p.setLayout(new GridLayout(x, y));
         f.add(p);
-        LogicGame logicGame = new LogicGame();
+        logicGame = new LogicGame();
 
-        f.setMenuBar(menubar);// tao menubar cho frame
-        Menu game = new Menu("Game");
-        menubar.add(game);
-        MenuItem newItem = new MenuItem("New Game");
-        game.add(newItem);
-        MenuItem exit = new MenuItem("Exit");
-        game.add(exit);
-        game.addSeparator();
-        newItem.addActionListener(new ActionListener() {
+        addMenu();
+        addChatArea();
+        addButton();
+        handleLogic();
+        while (true) {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logicGame.newgame(bt,matrandanh,x,y,matran, true);
-                try {
-                    oos.writeObject("newgame,123");
-                } catch (IOException ie) {
-                    //
-                }
-            }
-
-        });
-        exit.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-        //khung chat
-        Font fo = new Font("Arial",Font.BOLD,15);
-        content = new JTextArea();
-        content.setFont(fo);
-        content.setBackground(Color.white);
-
-        content.setEditable(false);
-        JScrollPane sp = new JScrollPane(content);
-        sp.setBounds(430,170,300,180);
-        send = new JButton("Gui");
-        send.setBounds(640, 390, 70, 40);
-        enterchat = new JTextField("");
-        enterchat.setFont(fo);
-        enterchat.setBounds(430, 400, 200, 30);
-        enterchat.setBackground(Color.white);
-        f.add(enterchat);
-        f.add(send);
-        f.add(sp);
-        f.setVisible(true);
-        send.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(e.getSource().equals(send))
-                {
-                    try
-                    {
-                        temp+="Tôi: " + enterchat.getText() + "\n";
-                        content.setText(temp);
-                        oos.writeObject("chat," + enterchat.getText());
-                        enterchat.setText("");
-                        //temp = "";
-                        enterchat.requestFocus();
-                        content.setVisible(false);
-                        content.setVisible(true);
-                    }
-                    catch (Exception r)
-                    {
-                        r.printStackTrace();
-                    }
-                }
-            }
-        });
-
-
-        //button
-        bt = new JButton[x][y];
-        for(int i = 0; i < x; i++)
-        {
-            for(int j = 0; j < y; j++)
-            {
-                final int a = i, b =j;
-                bt[a][b] = new JButton();
-                bt[a][b].setBackground(Color.LIGHT_GRAY);
-                bt[a][b].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        flat = true;// othello da click
-                        try {
-                            boolean check = logicGame.checkHang(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
-                            boolean check1 = logicGame.checkCot(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
-                            boolean check2 = logicGame.checkCheoXuong(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
-                            boolean check4 = logicGame.checkCheoLen(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
-                            if (check2 == true || check1 == true || check == true || check4 == true) {
-                                matrandanh[a][b] = 2;
-                                bt[a][b].setBackground(Color.BLACK);
-                                bt[a][b].setEnabled(false);
-                                logicGame.setEnableButton(bt,matrandanh,false,x,y);
-                            }
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-
-                });
-                p.add(bt[a][b]);
-                p.setVisible(false);
-                p.setVisible(true);
-            }
         }
-        logicGame.addBoard(bt,matrandanh,x,y);
+    }
 
-
-
+    private void handleLogic() {
         try {
-            serversocket = new ServerSocket(1234);
+            serversocket = new ServerSocket(SOCKET_PORT);
             System.out.println("Dang doi client...");
             socket = serversocket.accept();
             System.out.println("Client da ket noi!");
@@ -297,13 +202,130 @@ public class OthelloServer {
             }
         } catch (Exception ie) {
         }
-
-        while (true) {
-
-        }
     }
+
+    private void addChatArea() {
+        content.setEditable(false);
+        JScrollPane sp = new JScrollPane(content);
+        sp.setBounds(430,170,300,180);
+        send = new JButton("Gui");
+        send.setBounds(640, 390, 70, 40);
+        enterchat = new JTextField("");
+        Font fo = new Font("Arial",Font.BOLD,15);
+        enterchat.setFont(fo);
+        enterchat.setBounds(430, 400, 200, 30);
+        enterchat.setBackground(Color.white);
+        f.add(enterchat);
+        f.add(send);
+        f.add(sp);
+        f.setVisible(true);
+        send.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(e.getSource().equals(send))
+                {
+                    try
+                    {
+                        temp += enterchat.getText() + "\n";
+                        content.setText(temp);
+                        oos.writeObject("chat," + account.getUsername().concat(": ").concat(enterchat.getText().trim()));
+                        enterchat.setText("");
+                        //temp = "";
+                        enterchat.requestFocus();
+                        content.setVisible(false);
+                        content.setVisible(true);
+                    }
+                    catch (Exception r)
+                    {
+                        r.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    private void addMenu() {
+        f.setMenuBar(menubar);// tao menubar cho frame
+        Menu game = new Menu("Game");
+        menubar.add(game);
+        MenuItem newItem = new MenuItem("New Game");
+        game.add(newItem);
+        MenuItem exit = new MenuItem("Exit");
+        game.add(exit);
+        game.addSeparator();
+        newItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logicGame.newgame(bt,matrandanh,x,y,matran, true);
+                try {
+                    oos.writeObject("newgame,123");
+                } catch (IOException ie) {
+                    //
+                }
+            }
+
+        });
+        exit.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        //khung chat
+        Font fo = new Font("Arial",Font.BOLD,15);
+        content = new JTextArea();
+        content.setFont(fo);
+        content.setBackground(Color.white);
+    }
+
+    private void addButton() {
+        //button
+        bt = new JButton[x][y];
+        for(int i = 0; i < x; i++)
+        {
+            for(int j = 0; j < y; j++)
+            {
+                final int a = i, b =j;
+                bt[a][b] = new JButton();
+                bt[a][b].setBackground(Color.LIGHT_GRAY);
+                bt[a][b].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        flat = true;// othello da click
+                        try {
+                            boolean check = logicGame.checkHang(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
+                            boolean check1 = logicGame.checkCot(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
+                            boolean check2 = logicGame.checkCheoXuong(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
+                            boolean check4 = logicGame.checkCheoLen(bt,matrandanh,x,y,a,b,oos,1,2, Color.BLACK);
+                            if (check2 == true || check1 == true || check == true || check4 == true) {
+                                matrandanh[a][b] = 2;
+                                bt[a][b].setBackground(Color.BLACK);
+                                bt[a][b].setEnabled(false);
+                                logicGame.setEnableButton(bt,matrandanh,false,x,y);
+                            }
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+
+                });
+                p.add(bt[a][b]);
+                p.setVisible(false);
+                p.setVisible(true);
+            }
+        }
+        logicGame.addBoard(bt,matrandanh,x,y);
+
+    }
+
     public static void main(String[] args) throws IOException {
         new OthelloServer();
     }
 
+    public void run(Account account) throws IOException {
+        this.account = account;
+        new OthelloServer();
+    }
 }
