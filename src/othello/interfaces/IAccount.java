@@ -20,4 +20,5 @@ public interface IAccount {
      * @throws SQLException
      */
     int Create(Account account) throws SQLException;
+    int Update(Account account) throws SQLException;
 }

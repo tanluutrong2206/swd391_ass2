@@ -24,4 +24,8 @@ public class AccountController {
     public int Register(Account account) throws SQLException {
         return this.account.Create(account);
     }
+
+    public int Update(Account account) throws SQLException {
+        return this.account.Update(account);
+    }
 }

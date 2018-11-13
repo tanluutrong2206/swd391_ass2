@@ -60,7 +60,7 @@ public class AccountModel implements IAccount {
         if (isExistAccount(account.getUsername())) {
             return -1;
         }
-        String query = String.format("select * from %s where %s = ? and %s = ? SELECT SCOPE_IDENTITY()", TABLE_NAME, USERNAME_COL, PASSWORD_COL);
+        String query = String.format("INSERT INTO %s(%s, %s) VALUES(?, ?)  SELECT SCOPE_IDENTITY()", TABLE_NAME, USERNAME_COL, PASSWORD_COL);
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -117,5 +117,30 @@ public class AccountModel implements IAccount {
         }
 
         return result <= 0;
+    }
+
+    public int Update(Account account) throws SQLException {
+
+        String query = String.format("UPDATE %s SET %s = ? WHERE %s = ?", TABLE_NAME, PASSWORD_COL, ID_COL);
+        Connection con = null;
+        PreparedStatement ps = null;
+        int result = 0;
+
+        try {
+            con = DbConnection.connToMssql();
+            ps = con.prepareStatement(query);
+
+            ps.setString(1, account.getPassword());
+            ps.setInt(2, account.getId());
+            result = ps.executeUpdate();
+
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+        } catch (Exception e) {
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+            e.printStackTrace();
+        }
+        return result;
     }
 }
