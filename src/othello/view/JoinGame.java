@@ -3,6 +3,7 @@ package othello.view;
 import othello.entities.Account;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -27,21 +28,34 @@ public class JoinGame {
 
                 if (address == null || address.isEmpty() || port < 0) {
                     // invalid so create as server side
-                    try {
-                        dispose();
-                        new OthelloServer().run(account);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                        JOptionPane.showMessageDialog(panel1, "Đã có lỗi xảy ra, vui lòng thử lại!");
-                    }
+                    //                        new OthelloServer(account);
+                    dispose();
+//                        server.initGUI();
+//                        server.handleLogic();
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            OthelloServer server = null;
+                            try {
+                                server = new OthelloServer();
+                            server.run(account);
+//                                server.run();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        }
+                    });
+//                        server.handleLogic();
                 } else {
-                    try {
-                        dispose();
-                        new OthelloClient().run(address, port, account);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                        JOptionPane.showMessageDialog(panel1, "Đã có lỗi xảy ra, vui lòng thử lại!");
-                    }
+                    dispose();
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new OthelloClient().run(address, port, account);
+                        }
+                    });
+//                        new OthelloClient().initGUI();
                 }
             }
         });
@@ -56,6 +70,8 @@ public class JoinGame {
         frame = new JFrame("Join Game");
 
         //setup menu, parameter is account
+        MenubarGame menubarGame = new MenubarGame(account);
+        menubarGame.createMenu(frame);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(panel1);

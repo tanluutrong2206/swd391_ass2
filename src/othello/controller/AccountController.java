@@ -4,6 +4,7 @@ import othello.entities.Account;
 import othello.models.AccountModel;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class AccountController {
     private AccountModel account;
@@ -27,5 +28,13 @@ public class AccountController {
 
     public int Update(Account account) throws SQLException {
         return this.account.Update(account);
+    }
+
+    public List<Account> getTopWonGames(int top) throws SQLException {
+        return this.account.GetTopWonGames(top);
+    }
+
+    public List<Account> getTopWinRate(int top) throws SQLException {
+        return this.account.GetTopWinRate(top);
     }
 }

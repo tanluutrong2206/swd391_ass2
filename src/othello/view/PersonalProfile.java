@@ -30,7 +30,6 @@ public class PersonalProfile {
             }
         });
 
-        setInformation();
     }
 
     private void setInformation() {
@@ -57,6 +56,8 @@ public class PersonalProfile {
         frame = new JFrame("Personal Profile");
 
         //setup menu, parameter is account
+        MenubarGame menubarGame = new MenubarGame(account);
+        menubarGame.createMenu(frame);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(panel1);
@@ -64,6 +65,8 @@ public class PersonalProfile {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
+
+        setInformation();
     }
 
     private void dispose() {

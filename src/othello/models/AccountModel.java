@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountModel implements IAccount {
     private static final String TABLE_NAME = "Accounts";
@@ -142,5 +144,80 @@ public class AccountModel implements IAccount {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public List<Account> GetTopWonGames(int top) throws SQLException {
+        String query = "  select top(?) a.username, count(h.playerWinId) as [number_win], h.playerWinId from History h inner join Accounts a on h.playerWinId = a.id\n" +
+                "  group by h.playerWinId, a.username\n" +
+                "  order by number_win DESC";
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Account> accounts = new ArrayList<>();
+
+        try {
+            con = DbConnection.connToMssql();
+            ps = con.prepareStatement(query);
+
+            ps.setInt(1, top);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String username = rs.getString("username");
+                int numberWonGames = rs.getInt("number_win");
+
+                accounts.add(new Account(username, numberWonGames));
+            }
+
+            DbConnection.closeResultSet(rs);
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+        } catch (Exception e) {
+            DbConnection.closeResultSet(rs);
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+            e.printStackTrace();
+        }
+
+        return accounts;
+    }
+
+    @Override
+    public List<Account> GetTopWinRate(int top) throws SQLException {
+        String query = "\n" +
+                "  select top(?) a.username, count(h.playerWinId)/(select count(*) from History h1 where h1.playerLoseId = h.playerWinId or h1.playerWinId = h.playerWinId) as [win_rate], h.playerWinId from History h inner join Accounts a on h.playerWinId = a.id\n" +
+                "  group by h.playerWinId, a.username\n" +
+                "  order by win_rate DESC";
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Account> accounts = new ArrayList<>();
+
+        try {
+            con = DbConnection.connToMssql();
+            ps = con.prepareStatement(query);
+
+            ps.setInt(1, top);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String username = rs.getString("username");
+                double numberWinRate = rs.getDouble("win_rate");
+
+                accounts.add(new Account(username, numberWinRate));
+            }
+
+            DbConnection.closeResultSet(rs);
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+        } catch (Exception e) {
+            DbConnection.closeResultSet(rs);
+            DbConnection.closePrepareStatement(ps);
+            DbConnection.closeConn(con);
+            e.printStackTrace();
+        }
+
+        return accounts;
     }
 }

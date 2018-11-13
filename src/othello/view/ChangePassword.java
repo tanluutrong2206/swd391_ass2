@@ -57,6 +57,8 @@ public class ChangePassword {
         frame = new JFrame("Change password");
 
         //setup menu, parameter is account
+        MenubarGame menubarGame = new MenubarGame(account);
+        menubarGame.createMenu(frame);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(panel1);
