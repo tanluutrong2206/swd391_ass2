@@ -267,14 +267,269 @@ public class LogicGame {
         return check;
     }
 
-    public void setChat(String temp, JTextField enterchat, JTextArea content, ObjectOutputStream oos) throws IOException {
-        temp+="Tôi: " + enterchat.getText() + "\n";
-        content.setText(temp);
-        oos.writeObject("chat," + enterchat.getText());
-        enterchat.setText("");
-        //temp = "";
-        enterchat.requestFocus();
-        content.setVisible(false);
-        content.setVisible(true);
+    public boolean checkHang1(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, int index1, int index2) throws IOException {
+        boolean check = false;
+        if((y0+1)==y) {
+        } else if (matrandanh[x0][y0+1] == index1) {
+            int k =y0+1;
+            int i = y0+1;
+            while(i<y) {
+                if(matrandanh[x0][i] == index1) {
+                    i++;
+                } else {
+                    k = i;
+                    break;
+                }
+            }
+            if(k==y){
+
+            }
+            else if((matrandanh[x0][k] == index2)) {
+                check = true;
+            }
+        }
+        if((y0-1)==-1) {
+        } else if(matrandanh[x0][y0-1] == index1){
+            int p =y0-1;
+            int q = y0-1;
+            while(p>=0) {
+                if(matrandanh[x0][p] == index1) {
+                    p--;
+                } else {
+                    q = p;
+                    break;
+                }
+            }
+            if(q==(-1)) {
+
+            }
+            else if ((matrandanh[x0][q] == index2)) {
+                check =true;
+            }
+        }
+
+        return check;
     }
+
+    public boolean checkCot1(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, int index1, int index2) throws IOException {
+        boolean check = false;
+        if((x0+1)==x) {
+
+        }
+        else if(matrandanh[x0+1][y0] == index1) {
+            int k =x0+1;
+            int i = x0+1;
+            while(i<x) {
+                if(matrandanh[i][y0] == index1) {
+                    i++;
+                } else {
+                    k = i;
+                    break;
+                }
+            }
+            if(k==x) {
+
+            }
+            else if((matrandanh[k][y0] == index2)) {
+                check = true;
+            }
+        }
+        if((x0-1)==-1) {
+
+        }
+        else if(matrandanh[x0-1][y0] == index1){
+            int p =x0-1;
+            int q = x0-1;
+            while(p>=0) {
+                if(matrandanh[p][y0] == index1) {
+                    p--;
+                } else {
+                    q = p;
+                    break;
+                }
+            }
+            if(q==(-1)) {
+
+            }
+            else if((matrandanh[q][y0] == index2)) {
+                check =true;
+            }
+        }
+
+        return check;
+    }
+
+    public boolean checkCheoXuong1(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, int index1, int index2) throws IOException {
+        boolean check = false;
+        if((x0+1)==x || (y0+1) == y) {
+
+        }
+        else if(matrandanh[x0+1][y0+1] == index1) {
+            int k =1;
+            int i = 1;
+            while((i+y0<y) && (x0+i)<x) {
+                if(matrandanh[x0+i][y0+i] == index1) {
+                    i++;
+                } else {
+                    k = i;
+                    break;
+                }
+            }
+            if((k+y0)==y || (k+x0)==x) {
+
+            }
+            else if( (matrandanh[x0+k][y0+k] == index2)) {
+                check = true;
+            }
+        }
+        if((x0-1)==-1 || (y0-1) == -1) {
+
+        }
+        else if(matrandanh[x0-1][y0-1] == index1){
+            int p =1;
+            int q = 1;
+            while((y0-p>=0) && ((x0-p)>=0)) {
+                if(matrandanh[x0-p][y0-p] == index1) {
+                    p++;
+                } else {
+                    q = p;
+                    break;
+                }
+            }
+            if((x0-q)==(-1) || (y0-q)==(-1)) {
+
+            } else if(matrandanh[x0-q][y0-q] == index2) {
+                check =true;
+            }
+        }
+
+        return check;
+    }
+
+    public boolean checkCheoLen1(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, int index1, int index2) throws IOException {
+        boolean check = false;
+        if((x0+1)==x || (y0-1) == -1) {
+
+        }
+        else if(matrandanh[x0+1][y0-1] == index1) {
+            int k =1;
+            int i = 1;
+            while((i+x0<x) && (y0-i)>=0) {
+                if(matrandanh[x0+i][y0-i] == index1) {
+                    i++;
+                } else {
+                    k = i;
+                    break;
+                }
+            }
+            if((k+x0)==x || (y0-k) ==-1){
+
+            } else if (matrandanh[x0+k][y0-k] == index2) {
+                check = true;
+            }
+        }
+        if((x0-1)==-1 || (y0+1) == y) {
+
+        }
+        else if(matrandanh[x0-1][y0+1] == index1){
+            int p =1;
+            int q = 1;
+            while(x0-p>=0 && (y0+p)<y) {
+                if(matrandanh[x0-p][y0+p] == index1) {
+                    p++;
+                } else {
+                    q = p;
+                    break;
+                }
+            }
+            if((x0-q)==(-1) || (y0+p)==y){
+
+            }
+            else if(matrandanh[x0-q][y0+q] == index2) {
+                check =true;
+            }
+        }
+
+        return check;
+    }
+
+    public boolean checkStep(JButton[][] bt, int[][] matrandanh, int x, int y,  ObjectOutputStream oos, int index1, int index2) throws IOException {
+        boolean check = false;
+        for(int i=0; i<x; i++) {
+            for(int j = 0; j<y; j++) {
+                if(matrandanh[i][j] == 0) {
+                    if(checkHang1(bt, matrandanh, x, y, i,j,index1, index2) == true || checkCot1(bt, matrandanh, x, y, i,j, index1, index2) == true || checkCheoLen1(bt, matrandanh, x, y, i,j,index1, index2) == true || checkCheoXuong1(bt, matrandanh, x, y, i,j, index1, index2) ==true) {
+                        check = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if(check==false) {
+            oos.writeObject("ditiep,");
+        }
+        return check;
+    }
+
+    public boolean checkStep1(JButton[][] bt, int[][] matrandanh, int x, int y, int index1, int index2) throws IOException {
+        boolean check = false;
+        for(int i=0; i<x; i++) {
+            for(int j = 0; j<y; j++) {
+                if(matrandanh[i][j] == 0) {
+                    if(checkHang1(bt, matrandanh, x, y, i,j,index1, index2) == true || checkCot1(bt, matrandanh, x, y, i,j, index1, index2) == true || checkCheoLen1(bt, matrandanh, x, y, i,j,index1, index2) == true || checkCheoXuong1(bt, matrandanh, x, y, i,j, index1, index2) ==true) {
+                        check = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return check;
+    }
+
+    public boolean checkWin(JButton[][] bt, int[][] matrandanh, int x, int y) throws IOException {
+        boolean check = true;
+        if(checkStep1(bt,matrandanh,x,y,1,2) == false && checkStep1(bt,matrandanh,x,y,2,1) == false) {
+            return true;
+        }
+        for(int i=0; i<x; i++) {
+            for(int j=0; j<y; j++) {
+                if(matrandanh[i][j] == 0) {
+                    check = false;
+                    break;
+                }
+            }
+        }
+        return check;
+    }
+
+    public void newgame(JButton[][] bt, int[][] matrandanh, int x, int y, int[][] matran, boolean b) {
+        for (int i = 0; i < x; i++)
+        {
+            for (int j = 0; j < y; j++) {
+                bt[i][j].setBackground(Color.LIGHT_GRAY);
+                matran[i][j] = 0;
+                matrandanh[i][j] = 0;
+            }
+        }
+        addBoard(bt,matrandanh,x,y);
+        setEnableButton(bt,matrandanh,b,x,y);
+    }
+
+    public void dialogQuestionNewGame(JButton[][] bt, int[][] matrandanh, int x, int y, int[][] matran, boolean b, ObjectOutputStream oos, JFrame f, String check) {
+        Object[] options = { "Dong y", "Huy bo" };
+        int m = JOptionPane.showConfirmDialog(f,
+                "Ban da "+check+" .Ban co muon choi lai khong?", "Thong bao",
+                JOptionPane.YES_NO_OPTION);
+        if (m == JOptionPane.YES_OPTION) {
+            newgame(bt,matrandanh,x,y,matran,false);
+            try {
+                oos.writeObject("newgame,123");
+            } catch (IOException ie) {
+                //
+            }
+        } else if (m == JOptionPane.NO_OPTION) {
+            System.exit(0);
+        }
+    }
+
 }

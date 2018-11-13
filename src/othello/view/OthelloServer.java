@@ -34,7 +34,7 @@ public class OthelloServer {
     //MenuBar
     MenuBar menubar;
 
-    public OthelloServer() {
+    public OthelloServer() throws IOException {
         f = new JFrame();
         f.setTitle("Game Othello");
         f.setSize(750, 500);
@@ -66,6 +66,7 @@ public class OthelloServer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                logicGame.newgame(bt,matrandanh,x,y,matran, true);
                 try {
                     oos.writeObject("newgame,123");
                 } catch (IOException ie) {
@@ -107,7 +108,14 @@ public class OthelloServer {
                 {
                     try
                     {
-                        logicGame.setChat(temp,enterchat,content,oos);
+                        temp+="Tôi: " + enterchat.getText() + "\n";
+                        content.setText(temp);
+                        oos.writeObject("chat," + enterchat.getText());
+                        enterchat.setText("");
+                        //temp = "";
+                        enterchat.requestFocus();
+                        content.setVisible(false);
+                        content.setVisible(true);
                     }
                     catch (Exception r)
                     {
@@ -157,7 +165,6 @@ public class OthelloServer {
 
 
 
-
         try {
             serversocket = new ServerSocket(1234);
             System.out.println("Dang doi client...");
@@ -168,11 +175,28 @@ public class OthelloServer {
             oos = new ObjectOutputStream(os);
             ois = new ObjectInputStream(is);
             while (true) {
+                boolean check = logicGame.checkStep(bt,matrandanh,x,y,oos,1,2);
+                if(check==false) {
+                    logicGame.setEnableButton(bt, matrandanh, false, x, y);
+                    System.out.println("ditiep");
+                }
                 String stream = ois.readObject().toString();
                 String[] data = stream.split(",");
                 if (data[0].equals("chat")) {
                     temp += "Khách:" + data[1] + '\n';
                     content.setText(temp);
+                }
+                if (data[0].equals("ditiep")) {
+                    logicGame.setEnableButton(bt,matrandanh,true,x,y);
+                }
+                if (data[0].equals("thua")) {
+                    logicGame.dialogQuestionNewGame(bt,matrandanh,x,y,matran,true,oos,f,"thua");
+                }
+                if (data[0].equals("thang")) {
+                    logicGame.dialogQuestionNewGame(bt,matrandanh,x,y,matran,true,oos,f,"thắng");
+                }
+                if (data[0].equals("hoa")) {
+                    logicGame.dialogQuestionNewGame(bt,matrandanh,x,y,matran,true,oos,f,"hòa");
                 }
                 if (data[0].equals("doihang")) {
                     int y0 = Integer.valueOf(data[1]);
@@ -240,11 +264,45 @@ public class OthelloServer {
                     }
                     logicGame.setEnableButton(bt,matrandanh,true,x,y);
                 }
+                else if (data[0].equals("newgame")) {
+                    logicGame.newgame(bt,matrandanh,x,y,matran,true);
+                }
+                boolean checkWin = logicGame.checkWin(bt,matrandanh,x,y);
+                System.out.println(checkWin);
+                int dem1 = 0; int dem2 =0;
+                if(checkWin == true) {
+                    for(int i=0; i<x; i++) {
+                        for(int j=0; j<y; j++) {
+                            if(matrandanh[i][j]==1) {
+                                dem1++;
+                            }
+                            if(matrandanh[i][j]==2) {
+                                dem2++;
+                            }
+                        }
+                    }
+
+                    if(dem1<dem2) {
+                        oos.writeObject("thua,");
+                    }
+                    if(dem2<dem1) {
+                        oos.writeObject("thang,");
+                    }
+                    if(dem1==dem2) {
+                        oos.writeObject("hoa,");
+                    }
+                    break;
+
+                }
             }
         } catch (Exception ie) {
         }
+
+        while (true) {
+
+        }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new OthelloServer();
     }
 
