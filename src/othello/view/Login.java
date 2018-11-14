@@ -23,7 +23,6 @@ public class Login {
         btnLogin.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                super.mouseClicked(e);
                 String username = txtUsername.getText().trim();
                 String password = String.valueOf(txtPwd.getPassword());
                 Account account = new Account(username, password);
@@ -36,12 +35,19 @@ public class Login {
                         new JoinGame().run(account);
 //                        JOptionPane.showMessageDialog(panel1, "Login successful!");
                     } else {
-                        JOptionPane.showMessageDialog(panel1, "Login failed! " + username + " " + password);
+                        JOptionPane.showMessageDialog(panel1, "Login failed!");
                     }
                 } catch (Exception ex) {
                     //show error
                     JOptionPane.showMessageDialog(panel1, "Login error!");
                 }
+            }
+        });
+        btnRegister.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose();
+                new Register().run();
             }
         });
     }
