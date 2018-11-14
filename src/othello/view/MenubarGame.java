@@ -28,6 +28,8 @@ public class MenubarGame {
         accountM.add(history);
         MenuItem rank = new MenuItem("Rank");
         accountM.add(rank);
+        MenuItem logout = new MenuItem("Logout");
+        accountM.add(logout);
         accountM.addSeparator();
 
         profile.addActionListener(e -> {

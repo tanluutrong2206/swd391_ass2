@@ -9,16 +9,18 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 public class JoinGame {
-    private JPanel menuPanel;
     private JTextField txtAddress;
     private JTextField txtPort;
     private JButton btnGame;
     private JPanel panel1;
+    private JPanel panelBoard;
     private JFrame frame;
 
     private Account account;
 
     public JoinGame() {
+
+
         btnGame.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

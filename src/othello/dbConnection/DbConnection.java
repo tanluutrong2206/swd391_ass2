@@ -13,7 +13,7 @@ public class DbConnection {
     private static void initConfig() {
         try {
             InitialContext initialContext = new InitialContext();
-            connURL = "jdbc:sqlserver://TANLUUTRONG2206\\SQLEXPRESS:1433;databaseName=SWD_Project;integratedSecurity=true";
+            connURL = "jdbc:sqlserver://DESKTOP-LAGF36K\\SQLEXPRESS:1433;databaseName=SWD_Project;integratedSecurity=true";
             user = "sa";
             pass = "sa";
 //            Context environmentContext = (Context) initialContext.lookup("java:/comp/env");

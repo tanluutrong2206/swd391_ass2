@@ -60,7 +60,7 @@ public class Login {
         new Login().run();
     }
 
-    private void run() {
+    public void run() {
         frame = new JFrame("Login");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(panel1);

@@ -20,6 +20,7 @@ public class OthelloServer implements Runnable{
     JButton[][] bt;
     static boolean flat = false;
     boolean winner;
+    JLabel danh;
     JButton send;
     String temp = "", strNhan = "";
     JTextArea content;
@@ -57,10 +58,12 @@ public class OthelloServer implements Runnable{
             is = socket.getInputStream();
             oos = new ObjectOutputStream(os);
             ois = new ObjectInputStream(is);
+            danh.setText("Tới lượt bạn");
 
             while (true) {
                 boolean check = logicGame.checkStep(bt, matrandanh, x, y, oos, 1, 2);
                 if (check == false) {
+                    danh.setText("Tới lượt đối thủ");
                     logicGame.setEnableButton(bt, matrandanh, false, x, y);
                     System.out.println("ditiep");
                 }
@@ -71,18 +74,23 @@ public class OthelloServer implements Runnable{
                     content.setText(temp);
                 }
                 if (data[0].equals("ditiep")) {
+                    danh.setText("Tới lượt bạn");
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("thua")) {
-                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "thua");
+                    danh.setText("");
+                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "thua",data[1]);
                 }
                 if (data[0].equals("thang")) {
-                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "thắng");
+                    danh.setText("");
+                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "thắng",data[1]);
                 }
                 if (data[0].equals("hoa")) {
-                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "hòa");
+                    danh.setText("");
+                    logicGame.dialogQuestionNewGame(bt, matrandanh, x, y, matran, true, oos, f, "hòa","32 - 32");
                 }
                 if (data[0].equals("doihang")) {
+                    danh.setText("Tới lượt bạn");
                     int y0 = Integer.valueOf(data[1]);
                     int y1 = Integer.valueOf(data[2]);
                     int x0 = Integer.valueOf(data[3]);
@@ -94,6 +102,7 @@ public class OthelloServer implements Runnable{
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("doicot")) {
+                    danh.setText("Tới lượt bạn");
                     int x0 = Integer.valueOf(data[1]);
                     int x1 = Integer.valueOf(data[2]);
                     int y0 = Integer.valueOf(data[3]);
@@ -105,6 +114,7 @@ public class OthelloServer implements Runnable{
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("doiCheoXuong1")) {
+                    danh.setText("Tới lượt bạn");
                     int x0 = Integer.valueOf(data[1]);
                     int k = Integer.valueOf(data[2]);
                     int y0 = Integer.valueOf(data[3]);
@@ -116,6 +126,7 @@ public class OthelloServer implements Runnable{
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("doiCheoXuong2")) {
+                    danh.setText("Tới lượt bạn");
                     int x0 = Integer.valueOf(data[1]);
                     int k = Integer.valueOf(data[2]);
                     int y0 = Integer.valueOf(data[3]);
@@ -127,6 +138,7 @@ public class OthelloServer implements Runnable{
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("doiCheoLen1")) {
+                    danh.setText("Tới lượt bạn");
                     int x0 = Integer.valueOf(data[1]);
                     int k = Integer.valueOf(data[2]);
                     int y0 = Integer.valueOf(data[3]);
@@ -138,6 +150,7 @@ public class OthelloServer implements Runnable{
                     logicGame.setEnableButton(bt, matrandanh, true, x, y);
                 }
                 if (data[0].equals("doiCheoLen2")) {
+                    danh.setText("Tới lượt bạn");
                     int x0 = Integer.valueOf(data[1]);
                     int k = Integer.valueOf(data[2]);
                     int y0 = Integer.valueOf(data[3]);
@@ -167,13 +180,13 @@ public class OthelloServer implements Runnable{
                     }
 
                     if (dem1 < dem2) {
-                        oos.writeObject("thua,");
+                        oos.writeObject("thua, tỉ số " + dem1+" - " +dem2);
                     }
                     if (dem2 < dem1) {
-                        oos.writeObject("thang,");
+                        oos.writeObject("thang, tỉ số " + dem1+" - " +dem2);
                     }
                     if (dem1 == dem2) {
-                        oos.writeObject("hoa,");
+                        oos.writeObject("hoa, tỉ số " + dem1+" - " +dem2);
                     }
                     break;
 
@@ -241,10 +254,10 @@ public class OthelloServer implements Runnable{
                     public void actionPerformed(ActionEvent e) {
                         flat = true;// othello da click
                         try {
-                            boolean check = logicGame.checkHang(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK);
-                            boolean check1 = logicGame.checkCot(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK);
-                            boolean check2 = logicGame.checkCheoXuong(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK);
-                            boolean check4 = logicGame.checkCheoLen(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK);
+                            boolean check = logicGame.checkHang(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK, danh);
+                            boolean check1 = logicGame.checkCot(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK, danh);
+                            boolean check2 = logicGame.checkCheoXuong(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK, danh);
+                            boolean check4 = logicGame.checkCheoLen(bt, matrandanh, x, y, a, b, oos, 1, 2, Color.BLACK, danh);
                             if (check2 == true || check1 == true || check == true || check4 == true) {
                                 matrandanh[a][b] = 2;
                                 bt[a][b].setBackground(Color.BLACK);
@@ -295,6 +308,15 @@ public class OthelloServer implements Runnable{
         p.setLayout(new GridLayout(x, y));
         f.add(p);
 
+
+        Font fo = new Font("Arial", Font.BOLD, 15);
+        danh = new JLabel();
+        danh.setFont(fo);
+        danh.setText("Tới lượt bạn");
+        danh.setBounds(430,100,200,30);
+        danh.setBackground(Color.RED);
+        danh.setVisible(true);
+        f.add(danh);
 
         addMenu();
         addChatArea();
