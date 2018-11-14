@@ -60,6 +60,8 @@ public class ChangePassword {
         MenubarGame menubarGame = new MenubarGame(account);
         menubarGame.createMenu(frame);
 
+        txtUsername.setText(account.getUsername());
+
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(panel1);
         frame.pack();

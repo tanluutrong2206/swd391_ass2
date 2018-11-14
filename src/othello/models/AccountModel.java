@@ -19,7 +19,7 @@ public class AccountModel implements IAccount {
 
     @Override
     public int Login(Account account) throws SQLException {
-        String query = String.format("select * from %s where %s = ? and %s = ?", TABLE_NAME, USERNAME_COL, PASSWORD_COL);
+        String query = String.format("select * from %s where %s = ? and %s = ? COLLATE SQL_Latin1_General_CP1_CS_AS", TABLE_NAME, USERNAME_COL, PASSWORD_COL);
 
         int result = -1;
         Connection con = null;
@@ -34,17 +34,20 @@ public class AccountModel implements IAccount {
             con = DbConnection.connToMssql();
             ps = con.prepareStatement(query);
 
+            con.setAutoCommit(false);
             ps.setString(1, account.getUsername());
             ps.setString(2, account.getPassword());
-            System.out.println(query);
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 result = rs.getInt(ID_COL);
             }
+            con.commit();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
         } catch (Exception e) {
+            con.rollback();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
@@ -72,16 +75,19 @@ public class AccountModel implements IAccount {
             con = DbConnection.connToMssql();
             ps = con.prepareStatement(query);
 
+            con.setAutoCommit(false);
             ps.setString(1, account.getUsername());
             ps.setString(2, account.getPassword());
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                result = rs.getInt(1);
-            }
+            result = ps.executeUpdate();
+//            while (rs.next()) {
+//                result = rs.getInt(1);
+//            }
+            con.commit();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
         } catch (Exception e) {
+            con.rollback();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
@@ -91,34 +97,39 @@ public class AccountModel implements IAccount {
     }
 
     private boolean isExistAccount(String username) throws SQLException {
-        String query = String.format("select count(*) from %s where %s = ? LIMIT 1", TABLE_NAME, USERNAME_COL);
+        String query = String.format("select * from %s where %s = ?", TABLE_NAME, USERNAME_COL);
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int result = -1;
+        boolean result = false;
 
         try {
             con = DbConnection.connToMssql();
             ps = con.prepareStatement(query);
+            con.setAutoCommit(false);
 
             ps.setString(1, username);
+            System.out.println(query);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                result = rs.getInt(1);
+                result = true;
             }
 
+            con.commit();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
         } catch (Exception e) {
+            con.rollback();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
             e.printStackTrace();
+            result = true;
         }
 
-        return result <= 0;
+        return result;
     }
 
     public int Update(Account account) throws SQLException {
@@ -160,6 +171,7 @@ public class AccountModel implements IAccount {
             con = DbConnection.connToMssql();
             ps = con.prepareStatement(query);
 
+            con.setAutoCommit(false);
             ps.setInt(1, top);
             rs = ps.executeQuery();
 
@@ -170,10 +182,12 @@ public class AccountModel implements IAccount {
                 accounts.add(new Account(username, numberWonGames));
             }
 
+            con.commit();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
         } catch (Exception e) {
+            con.rollback();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
@@ -198,6 +212,7 @@ public class AccountModel implements IAccount {
             con = DbConnection.connToMssql();
             ps = con.prepareStatement(query);
 
+            con.setAutoCommit(false);
             ps.setInt(1, top);
             rs = ps.executeQuery();
 
@@ -208,10 +223,12 @@ public class AccountModel implements IAccount {
                 accounts.add(new Account(username, numberWinRate));
             }
 
+            con.commit();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
         } catch (Exception e) {
+            con.rollback();
             DbConnection.closeResultSet(rs);
             DbConnection.closePrepareStatement(ps);
             DbConnection.closeConn(con);
