@@ -36,7 +36,7 @@ public class Login {
                         new JoinGame().run(account);
 //                        JOptionPane.showMessageDialog(panel1, "Login successful!");
                     } else {
-                        JOptionPane.showMessageDialog(panel1, "Login failed! " + username + " " + password);
+                        JOptionPane.showMessageDialog(panel1, "Login failed!");
                     }
                 } catch (Exception ex) {
                     //show error

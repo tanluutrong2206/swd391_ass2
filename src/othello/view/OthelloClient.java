@@ -44,9 +44,9 @@ public class OthelloClient implements Runnable {
         thread = new Thread(this);
         logicGame = new LogicGame();
     }
-    public static void main(String[] args) throws IOException {
-        new OthelloClient().initGUI();
-    }
+//    public static void main(String[] args) throws IOException {
+//        new OthelloClient().initGUI();
+//    }
 
     public void run(String address, int port, Account account) {
         this.account = account;

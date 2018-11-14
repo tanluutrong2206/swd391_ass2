@@ -15,6 +15,11 @@ public class Account {
     public Account() {
     }
 
+    public Account(int id, String username) {
+        this.username = username;
+        this.id = id;
+    }
+
     public Account(String username, int wonGames) {
         this.username = username;
         this.wonGames = wonGames;

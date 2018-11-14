@@ -1,13 +1,9 @@
 package othello.view;
 
-import othello.controller.LogicGame;
 import othello.entities.Account;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class MenubarGame {
     private Account account;
@@ -34,54 +30,27 @@ public class MenubarGame {
         accountM.add(rank);
         accountM.addSeparator();
 
-        accountM.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
+        profile.addActionListener(e -> {
+            PersonalProfile personalProfile = new PersonalProfile();
+            f.dispose();
+            personalProfile.run(account);
         });
 
-        profile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PersonalProfile personalProfile = new PersonalProfile();
-                f.dispose();
-                personalProfile.run(account);
-            }
+        history.addActionListener(e -> {
+            HistoryMatch historyMatch = new HistoryMatch();
+            f.dispose();
+            historyMatch.run(account);
         });
 
-        history.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                HistoryMatch historyMatch = new HistoryMatch();
-                f.dispose();
-                historyMatch.run(account);
-            }
+        rank.addActionListener(e -> {
+            Ranking ranking = new Ranking();
+            f.dispose();
+            ranking.run(account);
         });
-
-        rank.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Ranking ranking = new Ranking();
-                f.dispose();
-                ranking.run(account);
-            }
+        newItem.addActionListener(e -> {
+            f.dispose();
+            new JoinGame().run(account);
         });
-        newItem.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                f.dispose();
-                new JoinGame().run(account);
-            }
-
-        });
-        exit.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        exit.addActionListener(e -> System.exit(0));
     }
 }
