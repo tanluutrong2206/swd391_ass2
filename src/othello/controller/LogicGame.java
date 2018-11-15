@@ -32,7 +32,7 @@ public class LogicGame {
     }
 
     //thuat toan tinh thang thua
-    public boolean checkHang(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color) throws IOException {
+    public boolean checkHang(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color, JLabel danh) throws IOException {
         boolean check = false;
         if((y0+1)==y) {
         } else if (matrandanh[x0][y0+1] == index1) {
@@ -51,6 +51,7 @@ public class LogicGame {
             }
             else if((matrandanh[x0][k] == index2)) {
                 check = true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doihang,"+String.valueOf(y0)+","+String.valueOf(k)+"," +String.valueOf(x0));
                 for(int t=y0+1; t<k; t++) {
                     matrandanh[x0][t] = index2;
@@ -76,6 +77,7 @@ public class LogicGame {
             }
             else if ((matrandanh[x0][q] == index2)) {
                 check =true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doihang,"+String.valueOf(q)+","+String.valueOf(y0)+"," +String.valueOf(x0));
                 for(int t=q+1; t<=y0-1; t++) {
                     matrandanh[x0][t] = index2;
@@ -88,7 +90,7 @@ public class LogicGame {
         return check;
     }
 
-    public boolean checkCot(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color) throws IOException {
+    public boolean checkCot(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color, JLabel danh) throws IOException {
         boolean check = false;
         if((x0+1)==x) {
 
@@ -109,6 +111,7 @@ public class LogicGame {
             }
             else if((matrandanh[k][y0] == index2)) {
                 check = true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doicot,"+String.valueOf(x0)+","+String.valueOf(k)+"," +String.valueOf(y0));
                 for(int t=x0+1; t<k; t++) {
                     matrandanh[t][y0] = index2;
@@ -136,6 +139,7 @@ public class LogicGame {
             }
             else if((matrandanh[q][y0] == index2)) {
                 check =true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doicot,"+String.valueOf(q)+","+String.valueOf(x0)+"," +String.valueOf(y0));
                 for(int t=q+1; t<=x0-1; t++) {
                     matrandanh[t][y0] = index2;
@@ -148,7 +152,7 @@ public class LogicGame {
         return check;
     }
 
-    public boolean checkCheoXuong(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color) throws IOException {
+    public boolean checkCheoXuong(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color, JLabel danh) throws IOException {
         boolean check = false;
         if((x0+1)==x || (y0+1) == y) {
 
@@ -169,6 +173,7 @@ public class LogicGame {
             }
             else if( (matrandanh[x0+k][y0+k] == index2)) {
                 check = true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doiCheoXuong1,"+String.valueOf(x0)+","+String.valueOf(k)+"," +String.valueOf(y0));
                 for(int t=1; t<k; t++) {
                     matrandanh[x0+t][y0+t] = index2;
@@ -195,6 +200,7 @@ public class LogicGame {
 
             } else if(matrandanh[x0-q][y0-q] == index2) {
                 check =true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doiCheoXuong2,"+String.valueOf(x0)+","+String.valueOf(q)+"," +String.valueOf(y0));
                 System.out.println("doiCheoXuong2,"+String.valueOf(x0)+","+String.valueOf(q)+"," +String.valueOf(y0));
                 for(int t=1; t<q; t++) {
@@ -208,7 +214,7 @@ public class LogicGame {
         return check;
     }
 
-    public boolean checkCheoLen(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color) throws IOException {
+    public boolean checkCheoLen(JButton[][] bt, int[][] matrandanh, int x, int y, int x0, int y0, ObjectOutputStream oos, int index1, int index2, Color color, JLabel danh) throws IOException {
         boolean check = false;
         if((x0+1)==x || (y0-1) == -1) {
 
@@ -228,6 +234,7 @@ public class LogicGame {
 
             } else if (matrandanh[x0+k][y0-k] == index2) {
                 check = true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doiCheoLen1,"+String.valueOf(x0)+","+String.valueOf(k)+"," +String.valueOf(y0));
                 for(int t=1; t<k; t++) {
                     matrandanh[x0+t][y0-t] = index2;
@@ -255,6 +262,7 @@ public class LogicGame {
             }
             else if(matrandanh[x0-q][y0+q] == index2) {
                 check =true;
+                danh.setText("Tới lượt đối thủ");
                 oos.writeObject("doiCheoLen2,"+String.valueOf(x0)+","+String.valueOf(q)+"," +String.valueOf(y0));
                 for(int t=1; t<q; t++) {
                     matrandanh[x0-t][y0+t] = index2;
@@ -515,10 +523,10 @@ public class LogicGame {
         setEnableButton(bt,matrandanh,b,x,y);
     }
 
-    public void dialogQuestionNewGame(JButton[][] bt, int[][] matrandanh, int x, int y, int[][] matran, boolean b, ObjectOutputStream oos, JFrame f, String check) {
-        Object[] options = { "Dong y", "Huy bo" };
+    public void dialogQuestionNewGame(JButton[][] bt, int[][] matrandanh, int x, int y, int[][] matran, boolean b, ObjectOutputStream oos, JFrame f, String check, String tyso) {
+        Object[] options = { "Đồng ý", "Thoát" };
         int m = JOptionPane.showConfirmDialog(f,
-                "Ban da "+check+" .Ban co muon choi lai khong?", "Thong bao",
+                "Ban da "+check+" "+ tyso+"! Bạn có muốn chơi lại không?", "Thong bao",
                 JOptionPane.YES_NO_OPTION);
         if (m == JOptionPane.YES_OPTION) {
             newgame(bt,matrandanh,x,y,matran,false);
